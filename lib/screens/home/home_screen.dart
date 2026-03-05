@@ -47,7 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Property> _getFilteredProperties(List<Property> properties) {
-    List<Property> result = List.from(properties);
+    // Only show verified properties to the public
+    List<Property> result = properties.where((p) => p.isVerified).toList();
 
     // Filter by category
     if (_selectedCategoryIndex > 0) {

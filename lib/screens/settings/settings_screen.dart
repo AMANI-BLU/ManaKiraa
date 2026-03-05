@@ -7,6 +7,7 @@ import '../../core/theme/theme_controller.dart';
 import '../../core/language/language_controller.dart';
 import '../../core/language/translations.dart';
 import '../property/my_properties_screen.dart';
+import '../chat/chat_detail_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -495,10 +496,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _navTile(
                   Icons.help_outline_rounded,
                   'help_support'.tr(context),
-                  onTap: () => _showInfoDialog(
-                    'help_support'.tr(context),
-                    'Need help? We\'re here for you!\n\n📧 Email: support@manakiraa.com\n📞 Phone: +251 9876 543 210',
-                  ),
+                  onTap: () async {
+                    try {
+                      // Fetch admin user ID (assuming standard email admin@manakiraa.com)
+                      final response = await Supabase.instance.client
+                          .from('profiles')
+                          .select('id, full_name, avatar_url')
+                          .eq(
+                            'email',
+                            'admin@manakiraa.com',
+                          ) // Note: email might be in auth.users, but we look in profiles
+                          .maybeSingle();
+
+                      String adminId =
+                          '00000000-0000-0000-0000-000000000000'; // Default fallback
+                      String adminName = 'Support Admin';
+                      String adminAvatar = '';
+
+                      if (response != null) {
+                        adminId = response['id'];
+                        adminName = response['full_name'] ?? 'Support Admin';
+                        adminAvatar = response['avatar_url'] ?? '';
+                      }
+
+                      if (mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChatDetailScreen(
+                              chat: {
+                                'name': adminName,
+                                'avatar': adminAvatar,
+                                'isOnline': true,
+                                'receiverId': adminId,
+                              },
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      _showInfoDialog(
+                        'help_support'.tr(context),
+                        'Need help? We\'re here for you!\n\n📧 Email: support@manakiraa.com\n📞 Phone: +251 9876 543 210',
+                      );
+                    }
+                  },
                   theme: theme,
                 ),
                 _divider(theme),

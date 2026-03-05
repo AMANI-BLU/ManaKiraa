@@ -195,7 +195,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
-                      'Pending',
+                      'Pending Approval',
                       style: TextStyle(
                         color: Colors.orange,
                         fontSize: 10,
