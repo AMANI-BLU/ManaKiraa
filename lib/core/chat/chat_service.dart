@@ -350,8 +350,12 @@ class ChatService {
               ? msg.receiverId
               : msg.senderId;
           final profile = _profileCache[otherUserId];
-          final email = profile?['email'] as String? ?? '';
-          final isAdmin = email == 'admin@manakiraa.com';
+          // We look for 'Admin' in the full_name or specifically if the ID is known.
+          // Since we might not have 'email' in the cache, let's use a more robust way.
+          final isAdmin =
+              profile?['full_name'] == 'Admin' ||
+              profile?['id'] ==
+                  'f04523c9-9430-4e3a-967a-569038234fd7'; // Placeholder for actual admin ID if known, but 'Admin' is what we check.
 
           results.add({
             'propertyId': msg.propertyId,
@@ -360,7 +364,9 @@ class ChatService {
                 ? 'Mana Kira'
                 : (profile?['full_name'] ??
                       'User ${otherUserId.substring(0, 4)}'),
-            'avatar': profile?['avatar_url'] ?? '',
+            'avatar': isAdmin
+                ? 'https://ui-avatars.com/api/?name=Mana+Kira&background=1a1a2e&color=fff'
+                : (profile?['avatar_url'] ?? ''),
             'message': msg.content,
             'time': _formatChatTime(msg.createdAt),
             'unread': unreadCounts[entry.key] ?? 0,

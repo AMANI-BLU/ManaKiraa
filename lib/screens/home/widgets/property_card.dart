@@ -177,6 +177,15 @@ class _PropertyCardState extends State<PropertyCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      'ETB ${_formatPrice(widget.property.price)}',
+                      style: GoogleFonts.nunito(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white.withValues(alpha: 0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
                     Row(
                       children: [
                         Expanded(
@@ -256,14 +265,6 @@ class _PropertyCardState extends State<PropertyCard>
                               '${widget.property.area}',
                             ),
                           ],
-                        ),
-                        Text(
-                          'ETB ${_formatPrice(widget.property.price)}',
-                          style: GoogleFonts.nunito(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
                         ),
                       ],
                     ),
