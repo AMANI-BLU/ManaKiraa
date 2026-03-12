@@ -65,26 +65,25 @@ class _PropertyCardState extends State<PropertyCard>
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.12),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(18),
           child: Stack(
             children: [
               // Property Image with Hero
               Hero(
                 tag: 'property_${widget.property.id}',
                 child: SizedBox(
-                  height: 240,
+                  height: 200,
                   width: double.infinity,
                   child: widget.property.imageUrl.isEmpty
                       ? _buildImageError(theme)
@@ -112,164 +111,187 @@ class _PropertyCardState extends State<PropertyCard>
                         ),
                 ),
               ),
-
-              // Top Badges
-              Positioned(
-                top: 12,
-                left: 12,
-                right: 12,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Category Badge (Glassmorphism)
-                    _buildGlassBadge(
-                      child: Text(
-                        widget.property.type.toUpperCase(),
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                    // Favorite Button
-                    GestureDetector(
-                      onTap: _toggleFavorite,
-                      child: ScaleTransition(
-                        scale: _heartScale,
-                        child: _buildGlassBadge(
-                          padding: const EdgeInsets.all(6),
-                          child: Icon(
-                            isFav
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            size: 18,
-                            color: isFav ? AppColors.favorite : Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Bottom Glass Info Panel
+              // Gradient overlay at bottom
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                height: 100,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: AppColors.cardGradient,
+                  ),
+                ),
+              ),
+              // Favorite Button (Top Right)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: _toggleFavorite,
+                  child: ScaleTransition(
+                    scale: _heartScale,
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      width: 32,
+                      height: 32,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withValues(alpha: 0.3),
-                            Colors.black.withValues(alpha: 0.7),
-                          ],
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  widget.property.name,
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              if (widget.property.isVerified) ...[
-                                const SizedBox(width: 6),
-                                const Icon(
-                                  Icons.verified_rounded,
-                                  size: 18,
-                                  color: AppColors.verified,
-                                ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on_outlined,
-                                size: 14,
-                                color: Colors.white70,
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  widget.property.location,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  'ETB ${_formatPrice(widget.property.price)}',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                flex: 4,
-                                child: Wrap(
-                                  spacing: 8,
-                                  runSpacing: 4,
-                                  alignment: WrapAlignment.end,
-                                  children: [
-                                    _miniStat(
-                                      Icons.bed_rounded,
-                                      widget.property.bedrooms.toString(),
-                                    ),
-                                    _miniStat(
-                                      Icons.bathtub_rounded,
-                                      widget.property.bathrooms.toString(),
-                                    ),
-                                    _miniStat(
-                                      Icons.square_foot_rounded,
-                                      widget.property.area.toString(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                        color: (isDark ? AppColors.surfaceDark : Colors.white)
+                            .withValues(alpha: 0.92),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
+                      child: Icon(
+                        isFav
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        size: 18,
+                        color: isFav ? AppColors.favorite : AppColors.textLight,
+                      ),
                     ),
                   ),
+                ),
+              ),
+              // Price badge (below heart, also Top Right) - This avoids overlap with bottom info
+              Positioned(
+                top: 48,
+                right: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: (isDark ? theme.primaryColor : Colors.white)
+                        .withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'ETB ${_formatPrice(widget.property.price)}',
+                    style: GoogleFonts.nunito(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              // Verified Badge (Top Left)
+              if (widget.property.isVerified)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: AppColors.verified,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+
+              // Name & Location & Stats (Bottom section)
+              Positioned(
+                bottom: 8,
+                left: 12,
+                right: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.property.name,
+                            style: GoogleFonts.nunito(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor.withValues(alpha: 0.8),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            widget.property.type,
+                            style: GoogleFonts.inter(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 12,
+                          color: Colors.white70,
+                        ),
+                        const SizedBox(width: 3),
+                        Expanded(
+                          child: Text(
+                            widget.property.location,
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              color: Colors.white70,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        _miniStat(
+                          Icons.bed_rounded,
+                          '${widget.property.bedrooms}',
+                        ),
+                        const SizedBox(width: 8),
+                        _miniStat(
+                          Icons.bathtub_rounded,
+                          '${widget.property.bathrooms}',
+                        ),
+                        const SizedBox(width: 8),
+                        _miniStat(
+                          Icons.square_foot_rounded,
+                          '${widget.property.area}',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -315,32 +337,6 @@ class _PropertyCardState extends State<PropertyCard>
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildGlassBadge({
-    required Widget child,
-    EdgeInsetsGeometry? padding,
-  }) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: Container(
-          padding:
-              padding ??
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          child: child,
-        ),
-      ),
     );
   }
 }
