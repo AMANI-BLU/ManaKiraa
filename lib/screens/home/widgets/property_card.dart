@@ -244,20 +244,19 @@ class _PropertyCardState extends State<PropertyCard>
                               const SizedBox(width: 8),
                               Flexible(
                                 flex: 4,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                child: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 4,
+                                  alignment: WrapAlignment.end,
                                   children: [
                                     _miniStat(
                                       Icons.bed_rounded,
                                       widget.property.bedrooms.toString(),
                                     ),
-                                    const SizedBox(width: 8),
                                     _miniStat(
                                       Icons.bathtub_rounded,
                                       widget.property.bathrooms.toString(),
                                     ),
-                                    const SizedBox(width: 8),
                                     _miniStat(
                                       Icons.square_foot_rounded,
                                       widget.property.area.toString(),
