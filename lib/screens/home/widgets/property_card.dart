@@ -157,53 +157,15 @@ class _PropertyCardState extends State<PropertyCard>
                   ),
                 ),
               ),
-              // Price badge (below heart, also Top Right) - This avoids overlap with bottom info
-              Positioned(
-                top: 48,
-                right: 10,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: (isDark ? theme.primaryColor : Colors.white)
-                        .withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    'ETB ${_formatPrice(widget.property.price)}',
-                    style: GoogleFonts.nunito(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : AppColors.textPrimary,
-                    ),
-                  ),
-                ),
-              ),
               // Verified Badge (Top Left)
               if (widget.property.isVerified)
                 Positioned(
                   top: 10,
                   left: 10,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: AppColors.verified,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check,
-                      size: 14,
-                      color: Colors.white,
-                    ),
+                  child: Icon(
+                    Icons.verified_rounded,
+                    size: 18,
+                    color: AppColors.verified,
                   ),
                 ),
 
@@ -274,20 +236,34 @@ class _PropertyCardState extends State<PropertyCard>
                     ),
                     const SizedBox(height: 4),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        _miniStat(
-                          Icons.bed_rounded,
-                          '${widget.property.bedrooms}',
+                        Row(
+                          children: [
+                            _miniStat(
+                              Icons.bed_rounded,
+                              '${widget.property.bedrooms}',
+                            ),
+                            const SizedBox(width: 8),
+                            _miniStat(
+                              Icons.bathtub_rounded,
+                              '${widget.property.bathrooms}',
+                            ),
+                            const SizedBox(width: 8),
+                            _miniStat(
+                              Icons.square_foot_rounded,
+                              '${widget.property.area}',
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        _miniStat(
-                          Icons.bathtub_rounded,
-                          '${widget.property.bathrooms}',
-                        ),
-                        const SizedBox(width: 8),
-                        _miniStat(
-                          Icons.square_foot_rounded,
-                          '${widget.property.area}',
+                        Text(
+                          'ETB ${_formatPrice(widget.property.price)}',
+                          style: GoogleFonts.nunito(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),

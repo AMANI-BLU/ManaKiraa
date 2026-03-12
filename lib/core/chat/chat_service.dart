@@ -350,18 +350,23 @@ class ChatService {
               ? msg.receiverId
               : msg.senderId;
           final profile = _profileCache[otherUserId];
+          final email = profile?['email'] as String? ?? '';
+          final isAdmin = email == 'admin@manakiraa.com';
 
           results.add({
             'propertyId': msg.propertyId,
             'receiverId': otherUserId,
-            'name':
-                profile?['full_name'] ?? 'User ${otherUserId.substring(0, 4)}',
+            'name': isAdmin
+                ? 'Mana Kira'
+                : (profile?['full_name'] ??
+                      'User ${otherUserId.substring(0, 4)}'),
             'avatar': profile?['avatar_url'] ?? '',
             'message': msg.content,
             'time': _formatChatTime(msg.createdAt),
             'unread': unreadCounts[entry.key] ?? 0,
             'isOnline': profile?['is_online'] ?? false,
             'lastMessageTime': msg.createdAt,
+            'isAdmin': isAdmin,
           });
         }
 

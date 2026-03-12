@@ -343,13 +343,27 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  chat['name'],
-                  style: GoogleFonts.nunito(
-                    fontSize: 14,
-                    fontWeight: unread > 0 ? FontWeight.w700 : FontWeight.w600,
-                    color: theme.textTheme.displayLarge?.color,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      chat['name'],
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: unread > 0
+                            ? FontWeight.w700
+                            : FontWeight.w600,
+                        color: theme.textTheme.displayLarge?.color,
+                      ),
+                    ),
+                    if (chat['isAdmin'] == true) ...[
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.verified_rounded,
+                        size: 14,
+                        color: AppColors.verified,
+                      ),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 3),
                 Text(

@@ -434,6 +434,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         final presence = snapshot.data ?? {'is_online': false};
                         final online = presence['is_online'] as bool? ?? false;
                         final lastSeenStr = presence['last_seen'] as String?;
+                        final email = presence['email'] as String? ?? '';
+                        final isAdmin = email == 'admin@manakiraa.com';
+
+                        String name =
+                            presence['full_name'] ??
+                            widget.chat['name'] ??
+                            'User';
+                        if (isAdmin) name = 'Mana Kira';
+
                         String sub = online ? 'Online' : 'Offline';
                         if (!online && lastSeenStr != null) {
                           final lastSeen = DateTime.parse(lastSeenStr);
@@ -444,15 +453,25 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              presence['full_name'] ??
-                                  widget.chat['name'] ??
-                                  'User',
-                              style: GoogleFonts.nunito(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: theme.textTheme.displayLarge?.color,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  name,
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: theme.textTheme.displayLarge?.color,
+                                  ),
+                                ),
+                                if (isAdmin) ...[
+                                  const SizedBox(width: 4),
+                                  const Icon(
+                                    Icons.verified_rounded,
+                                    size: 16,
+                                    color: AppColors.verified,
+                                  ),
+                                ],
+                              ],
                             ),
                             Text(
                               sub,
