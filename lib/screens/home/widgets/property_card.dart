@@ -184,25 +184,33 @@ class _PropertyCardState extends State<PropertyCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Price Badge (Above Title)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.primaryColor.withValues(alpha: 0.8),
-                        borderRadius: BorderRadius.circular(6),
+                        color: AppColors.accent,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
-                        widget.property.type,
+                        'ETB ${_formatPrice(widget.property.price)}',
                         style: GoogleFonts.inter(
-                          fontSize: 8,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Expanded(
@@ -217,13 +225,28 @@ class _PropertyCardState extends State<PropertyCard>
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'ETB ${_formatPrice(widget.property.price)}',
-                          style: GoogleFonts.nunito(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                        const SizedBox(width: 6),
+                        // Category Badge (Next to Title)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor.withValues(alpha: 0.9),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Text(
+                            widget.property.type,
+                            style: GoogleFonts.inter(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],

@@ -12,6 +12,19 @@ class MockData {
     'Store',
   ];
 
+  static const List<String> locations = [
+    'Addis Ketema',
+    'Bajaj Tera(Quufto)',
+    'Stadium',
+    'Project(Quufto)',
+    'Garbi',
+    'Kella(Doloollo Hoola)',
+    'Gabaya Guddo',
+    'Gabaya Diqo',
+    'Gidicho',
+    'Kideste mariam school sefer',
+  ];
+
   static const List<Property> properties = [
     Property(
       id: '1',

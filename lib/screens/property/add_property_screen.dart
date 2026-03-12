@@ -6,6 +6,7 @@ import '../../core/language/translations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/property/property_controller.dart';
 import '../../core/supabase/supabase_service.dart';
+import '../../data/mock_data.dart';
 import '../../models/property.dart';
 
 class AddPropertyScreen extends StatefulWidget {
@@ -394,14 +395,10 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Kebele (formerly Full Address)
               _buildFieldLabel('address'.tr(context)),
               Autocomplete<String>(
                 optionsBuilder: (TextEditingValue textEditingValue) {
-                  final existingLocations = PropertyController.instance.value
-                      .map((p) => p.location)
-                      .toSet()
-                      .toList();
+                  final List<String> existingLocations = MockData.locations;
                   if (textEditingValue.text.isEmpty) {
                     return existingLocations;
                   }

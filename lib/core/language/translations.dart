@@ -355,10 +355,13 @@ class Translations {
 
 extension TranslationExtension on String {
   String tr(BuildContext context) {
-    // This is a simplified way to access localization
-    // For a real app, you'd use a more robust context-based lookup
-    // but here we'll use our singleton controller for brevity
-    final langCode = LanguageController.instance.value.languageCode;
-    return Translations.translate(this, langCode);
+    try {
+      final locale = Localizations.localeOf(context);
+      return Translations.translate(this, locale.languageCode);
+    } catch (_) {
+      // Fallback to controller if context-based lookup fails
+      final langCode = LanguageController.instance.value.languageCode;
+      return Translations.translate(this, langCode);
+    }
   }
 }
