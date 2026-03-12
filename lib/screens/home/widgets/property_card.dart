@@ -228,31 +228,42 @@ class _PropertyCardState extends State<PropertyCard>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'ETB ${_formatPrice(widget.property.price)}',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  'ETB ${_formatPrice(widget.property.price)}',
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  _miniStat(
-                                    Icons.bed_rounded,
-                                    widget.property.bedrooms.toString(),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  _miniStat(
-                                    Icons.bathtub_rounded,
-                                    widget.property.bathrooms.toString(),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  _miniStat(
-                                    Icons.square_foot_rounded,
-                                    widget.property.area.toString(),
-                                  ),
-                                ],
+                              const SizedBox(width: 8),
+                              Flexible(
+                                flex: 4,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    _miniStat(
+                                      Icons.bed_rounded,
+                                      widget.property.bedrooms.toString(),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    _miniStat(
+                                      Icons.bathtub_rounded,
+                                      widget.property.bathrooms.toString(),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    _miniStat(
+                                      Icons.square_foot_rounded,
+                                      widget.property.area.toString(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
