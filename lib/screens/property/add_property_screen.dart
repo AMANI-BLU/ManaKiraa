@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/language/translations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/property/property_controller.dart';
+import '../../core/supabase/supabase_service.dart';
 import '../../models/property.dart';
 
 class AddPropertyScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
+  XFile? _idFile;
 
   late final TextEditingController _nameController;
   late final TextEditingController _priceController;
@@ -92,7 +94,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, {bool isId = false}) async {
     try {
       final XFile? selected = await _picker.pickImage(
         source: source,
@@ -102,7 +104,11 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
       );
       if (selected != null) {
         setState(() {
-          _imageFile = selected;
+          if (isId) {
+            _idFile = selected;
+          } else {
+            _imageFile = selected;
+          }
         });
       }
     } catch (e) {
@@ -110,7 +116,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     }
   }
 
-  void _showImageSourceSheet() {
+  void _showImageSourceSheet({bool isId = false}) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -137,7 +143,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               title: Text('gallery'.tr(context)),
               onTap: () {
                 Navigator.pop(context);
-                _pickImage(ImageSource.gallery);
+                _pickImage(ImageSource.gallery, isId: isId);
               },
             ),
             ListTile(
@@ -145,7 +151,7 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
               title: Text('camera'.tr(context)),
               onTap: () {
                 Navigator.pop(context);
-                _pickImage(ImageSource.camera);
+                _pickImage(ImageSource.camera, isId: isId);
               },
             ),
             const SizedBox(height: 24),
@@ -159,6 +165,19 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
+        String idUrl = widget.property?.verificationDocumentUrl ?? '';
+
+        if (_idFile != null) {
+          final bytes = await File(_idFile!.path).readAsBytes();
+          final uploadedUrl = await SupabaseService.uploadVerificationDocument(
+            fileName: 'national_id.jpg',
+            bytes: bytes,
+          );
+          if (uploadedUrl != null) {
+            idUrl = uploadedUrl;
+          }
+        }
+
         final property = Property(
           id: widget.property?.id ?? '',
           user_id: widget.property?.user_id,
@@ -173,6 +192,8 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
           type: _selectedType,
           phoneNumber: _phoneController.text,
           isVerified: widget.property?.isVerified ?? false,
+          verificationStatus: idUrl.isNotEmpty ? 'pending' : 'unverified',
+          verificationDocumentUrl: idUrl,
           description: _descriptionController.text,
           bedrooms: _selectedType == 'Family House'
               ? int.tryParse(_bedsController.text) ?? 0
@@ -267,6 +288,55 @@ class _AddPropertyScreenState extends State<AddPropertyScreen> {
                     ),
                   ),
                   child: _buildImagePreview(theme),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // National ID picker
+              _buildFieldLabel('National ID (Verification)'),
+              GestureDetector(
+                onTap: () => _showImageSourceSheet(isId: true),
+                child: Container(
+                  width: double.infinity,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color:
+                          theme.dividerTheme.color ??
+                          Colors.grey.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: _idFile != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: Image.file(
+                            File(_idFile!.path),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.badge_outlined,
+                              size: 32,
+                              color: theme.primaryColor,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Upload National ID',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: AppColors.textLight.withValues(
+                                  alpha: 0.7,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
               ),
               const SizedBox(height: 24),

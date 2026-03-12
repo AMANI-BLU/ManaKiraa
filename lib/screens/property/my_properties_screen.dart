@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import '../../core/theme/app_colors.dart';
-import '../../core/supabase/supabase_service.dart';
 import '../../core/property/property_controller.dart';
 import '../../models/property.dart';
 import 'property_detail_screen.dart';
@@ -33,16 +30,6 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
 
   void _onPropertiesChanged() {
     if (mounted) setState(() {});
-  }
-
-  /// Shows a bottom sheet with verification steps and ID upload prompt.
-  void _showVerificationFlow(Property property) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _VerificationSheet(property: property),
-    );
   }
 
   @override
@@ -102,11 +89,12 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AddPropertyScreen()),
           );
+          _controller.refresh();
         },
         backgroundColor: theme.primaryColor,
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 30),
@@ -238,14 +226,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                     ],
                   )
                 else if (!property.isVerified)
-                  TextButton.icon(
-                    onPressed: () => _showVerificationFlow(property),
-                    icon: const Icon(Icons.verified_user_outlined, size: 18),
-                    label: const Text('Verify'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.verified,
-                    ),
-                  )
+                  const SizedBox.shrink()
                 else
                   Row(
                     children: [
@@ -269,12 +250,15 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                 // Edit
                 IconButton(
                   tooltip: 'Edit',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AddPropertyScreen(property: property),
-                    ),
-                  ),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AddPropertyScreen(property: property),
+                      ),
+                    );
+                    _controller.refresh();
+                  },
                   icon: Icon(Icons.edit_outlined, color: theme.primaryColor),
                 ),
                 // Delete
@@ -330,265 +314,6 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
               ),
             ),
             child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// ─────────────────────────────────────────────────────────────────────────
-/// Verification bottom sheet
-/// ─────────────────────────────────────────────────────────────────────────
-class _VerificationSheet extends StatefulWidget {
-  final Property property;
-  const _VerificationSheet({required this.property});
-
-  @override
-  State<_VerificationSheet> createState() => _VerificationSheetState();
-}
-
-class _VerificationSheetState extends State<_VerificationSheet> {
-  bool _submitting = false;
-  File? _idImage;
-  final _picker = ImagePicker();
-  final _controller = PropertyController.instance;
-
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 70,
-    );
-    if (image != null) {
-      setState(() => _idImage = File(image.path));
-    }
-  }
-
-  Future<void> _submitRequest() async {
-    if (_idImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please upload your National ID')),
-      );
-      return;
-    }
-
-    setState(() => _submitting = true);
-
-    try {
-      final bytes = await _idImage!.readAsBytes();
-      final imageUrl = await SupabaseService.uploadVerificationDocument(
-        fileName: 'national_id.jpg',
-        bytes: bytes,
-      );
-
-      if (imageUrl != null) {
-        await _controller.submitVerification(widget.property.id, imageUrl);
-        if (mounted) {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Verification request submitted successfully!'),
-              backgroundColor: AppColors.verified,
-            ),
-          );
-        }
-      } else {
-        throw Exception('Failed to upload document');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _submitting = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 32,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Handle bar
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.dividerTheme.color ?? AppColors.divider,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Title
-          Row(
-            children: [
-              Icon(
-                Icons.verified_user_rounded,
-                color: AppColors.verified,
-                size: 28,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Property Verification',
-                style: GoogleFonts.nunito(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: theme.textTheme.displayLarge?.color,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Upload your National ID to verify "${widget.property.name}".',
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: AppColors.textLight,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // ID Upload Area
-          InkWell(
-            onTap: _submitting ? null : _pickImage,
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              width: double.infinity,
-              height: 160,
-              decoration: BoxDecoration(
-                color: theme.inputDecorationTheme.fillColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: _idImage != null
-                      ? AppColors.verified.withValues(alpha: 0.5)
-                      : (theme.dividerTheme.color ?? AppColors.divider),
-                ),
-              ),
-              child: _idImage != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.file(_idImage!, fit: BoxFit.cover),
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add_a_photo_outlined,
-                          size: 32,
-                          color: theme.primaryColor,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Upload National ID',
-                          style: GoogleFonts.nunito(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: theme.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Front side clear photo',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: AppColors.textLight,
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Info note
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.verified.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: AppColors.verified.withValues(alpha: 0.2),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  color: AppColors.verified,
-                  size: 20,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Our team will manually review your ID. Expect verification within 24–48 hours.',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.verified,
-                      height: 1.45,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Submit button
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton.icon(
-              onPressed: (_submitting || _idImage == null)
-                  ? null
-                  : _submitRequest,
-              icon: _submitting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.send_rounded, size: 18),
-              label: Text(
-                _submitting ? 'Submitting...' : 'Submit for Review',
-                style: GoogleFonts.nunito(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.verified,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-            ),
           ),
         ],
       ),

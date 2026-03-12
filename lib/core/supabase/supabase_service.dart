@@ -41,6 +41,7 @@ class SupabaseService {
       type: data['type'] ?? '',
       isVerified: data['is_verified'] ?? false,
       verificationStatus: data['verification_status'] ?? 'unverified',
+      verificationDocumentUrl: data['verification_document_url'] ?? '',
       description: data['description'] ?? '',
       bedrooms: data['bedrooms'] ?? 1,
       bathrooms: data['bathrooms'] ?? 1,
@@ -98,7 +99,10 @@ class SupabaseService {
         'image_url': imageUrl,
         'type': property.type,
         'is_verified': false,
-        'verification_status': 'pending',
+        'verification_status': property.verificationDocumentUrl.isNotEmpty
+            ? 'pending'
+            : 'unverified',
+        'verification_document_url': property.verificationDocumentUrl,
         'description': property.description,
         'bedrooms': property.bedrooms,
         'bathrooms': property.bathrooms,

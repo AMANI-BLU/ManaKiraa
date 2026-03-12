@@ -277,14 +277,18 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen>
                         if (property.type != 'Single Room') ...[
                           _statItem(
                             Icons.bed_rounded,
-                            '${property.bedrooms}',
+                            property.bedrooms == 0
+                                ? 'NA'
+                                : '${property.bedrooms}',
                             'beds'.tr(context),
                             context,
                           ),
                           _verticalDivider(context),
                           _statItem(
                             Icons.bathtub_rounded,
-                            '${property.bathrooms}',
+                            property.bathrooms == 0
+                                ? 'NA'
+                                : '${property.bathrooms}',
                             'baths'.tr(context),
                             context,
                           ),
@@ -292,7 +296,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen>
                         ],
                         _statItem(
                           Icons.square_foot_rounded,
-                          '${property.area}',
+                          property.area == 0 ? 'NA' : '${property.area}',
                           'sqm'.tr(context),
                           context,
                         ),

@@ -15,6 +15,7 @@ class Property {
   final List<String> amenities;
   final List<String> images;
 
+  final String verificationDocumentUrl;
   final String phoneNumber;
   final String? user_id;
 
@@ -30,6 +31,7 @@ class Property {
     this.phoneNumber = '+251911223344',
     this.isVerified = false,
     this.verificationStatus = 'unverified',
+    this.verificationDocumentUrl = '',
     this.description = '',
     this.bedrooms = 2,
     this.bathrooms = 1,
