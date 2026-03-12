@@ -434,13 +434,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         final presence = snapshot.data ?? {'is_online': false};
                         final online = presence['is_online'] as bool? ?? false;
                         final lastSeenStr = presence['last_seen'] as String?;
-                        final email = presence['email'] as String? ?? '';
-                        final isAdmin = email == 'admin@manakiraa.com';
+                        final fullName = presence['full_name'] as String? ?? '';
+                        final isAdmin =
+                            fullName == 'Admin' ||
+                            presence['id'] ==
+                                'f04523c9-9430-4e3a-967a-569038234fd7';
 
-                        String name =
-                            presence['full_name'] ??
-                            widget.chat['name'] ??
-                            'User';
+                        String name = fullName.isNotEmpty
+                            ? fullName
+                            : (widget.chat['name'] ?? 'User');
                         if (isAdmin) name = 'Mana Kira';
 
                         String sub = online ? 'Online' : 'Offline';
