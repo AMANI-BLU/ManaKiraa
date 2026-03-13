@@ -66,7 +66,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen>
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Could not launch dialer')));
+        ).showSnackBar(SnackBar(content: Text('dialer_error'.tr(context))));
       }
     }
   }
@@ -251,7 +251,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen>
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Verified',
+                                'verified'.tr(context),
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -412,7 +412,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen>
                 child: IconButton(
                   onPressed: () {
                     final chat = {
-                      'name': 'Property Owner',
+                      'name': 'property_owner'.tr(context),
                       'avatar':
                           'https://ui-avatars.com/api/?name=Owner&background=random',
                       'isOnline': true,

@@ -4,10 +4,14 @@ import 'core/connectivity/connectivity_wrapper.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'core/language/language_controller.dart';
+import 'core/language/translations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/welcome/welcome_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
+import 'screens/auth/forgot_password_screen.dart';
+import 'screens/auth/reset_password_screen.dart';
 import 'screens/main/main_screen.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/profile/edit_profile_screen.dart';
@@ -34,6 +38,18 @@ class ManaKiraaApp extends StatelessWidget {
               darkTheme: AppTheme.darkTheme,
               themeMode: mode,
               locale: locale,
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                const AfanOromoMaterialLocalizationsDelegate(),
+                const AfanOromoWidgetsLocalizationsDelegate(),
+              ],
+              supportedLocales: const [
+                Locale('en'),
+                Locale('om'),
+                Locale('am'),
+              ],
               initialRoute: '/splash',
               builder: (context, child) => ConnectivityWrapper(child: child!),
               routes: {
@@ -41,6 +57,12 @@ class ManaKiraaApp extends StatelessWidget {
                 '/welcome': (context) => const WelcomeScreen(),
                 '/login': (context) => const LoginScreen(),
                 '/signup': (context) => const SignupScreen(),
+                '/forgot-password': (context) => const ForgotPasswordScreen(),
+                '/reset-password': (context) {
+                  final email =
+                      ModalRoute.of(context)?.settings.arguments as String?;
+                  return ResetPasswordScreen(email: email);
+                },
                 '/main': (context) => const MainScreen(),
                 '/notifications': (context) => const NotificationsScreen(),
                 '/edit-profile': (context) => const EditProfileScreen(),

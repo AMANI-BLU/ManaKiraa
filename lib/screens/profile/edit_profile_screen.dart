@@ -128,7 +128,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Profile updated successfully',
+                'changes_saved'.tr(context),
                 style: GoogleFonts.inter(),
               ),
               behavior: SnackBarBehavior.floating,
@@ -166,7 +166,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Edit Profile',
+          'edit_profile'.tr(context),
           style: GoogleFonts.nunito(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -248,7 +248,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: _nameController,
                 style: theme.textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  labelText: 'Full Name',
+                  labelText: 'full_name'.tr(context),
                   labelStyle: theme.textTheme.bodyMedium,
                   prefixIcon: Icon(
                     Icons.person_outline_rounded,
@@ -263,7 +263,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'name_hint'.tr(context);
                   }
                   return null;
                 },
@@ -274,7 +274,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 keyboardType: TextInputType.emailAddress,
                 style: theme.textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'email'.tr(context),
                   labelStyle: theme.textTheme.bodyMedium,
                   prefixIcon: Icon(
                     Icons.email_outlined,
@@ -289,10 +289,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'email_hint'.tr(context);
                   }
                   if (!value.contains('@')) {
-                    return 'Please enter a valid email';
+                    return 'valid_email_hint'.tr(context);
                   }
                   return null;
                 },
@@ -321,7 +321,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         )
                       : Text(
-                          'Save Changes',
+                          'save_changes'.tr(context),
                           style: GoogleFonts.nunito(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -342,7 +342,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   child: Text(
-                    'Logout',
+                    'logout'.tr(context),
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,

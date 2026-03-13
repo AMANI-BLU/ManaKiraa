@@ -8,6 +8,7 @@ class AuthService {
 
   static Session? get currentSession => _client.auth.currentSession;
   static User? get currentUser => _client.auth.currentUser;
+  static bool isDeletingAccount = false;
 
   static Future<AuthResponse> signUp({
     required String email,
@@ -31,14 +32,44 @@ class AuthService {
     );
   }
 
+  static Future<void> resetPasswordForEmail(String email) async {
+    await _client.auth.resetPasswordForEmail(
+      email,
+      redirectTo: kIsWeb ? null : 'com.manakira.app://reset-callback/',
+    );
+  }
+
+  static Future<UserResponse> updatePassword(String newPassword) async {
+    return await _client.auth.updateUser(UserAttributes(password: newPassword));
+  }
+
+  static Future<AuthResponse> verifyResetOTP({
+    required String email,
+    required String token,
+  }) async {
+    return await _client.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+  }
+
   static Future<AuthResponse> signInWithGoogle() async {
-    const webClientId = 'YOUR_WEB_CLIENT_ID'; // Replace or use default
-    const iosClientId = 'YOUR_IOS_CLIENT_ID'; // Replace or use default
+    // For Supabase Google Auth on Android, you MUST use the Web Client ID as serverClientId
+    // to receive an idToken back.
+    const webClientId =
+        '812539086704-hnf9lm9l0go8st71lhb01on8iep1sh23.apps.googleusercontent.com';
+    const iosClientId =
+        '812539086704-1135r8a5qd2gcb0ig79fuoqgdctambn4.apps.googleusercontent.com';
 
     final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId: iosClientId,
       serverClientId: webClientId,
     );
+
+    // Force the account picker to show by signing out first
+    await googleSignIn.signOut();
+
     final googleUser = await googleSignIn.signIn();
     final googleAuth = await googleUser?.authentication;
     final accessToken = googleAuth?.accessToken;
@@ -52,6 +83,13 @@ class AuthService {
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
+    );
+  }
+
+  static Future<void> signInWithFacebook() async {
+    await _client.auth.signInWithOAuth(
+      OAuthProvider.facebook,
+      redirectTo: kIsWeb ? null : 'com.manakira.app://login-callback/',
     );
   }
 
@@ -101,7 +139,23 @@ class AuthService {
     await _client.auth.signOut();
   }
 
-  static Future<bool> checkIsActive(String userId) async {
+  static Future<void> deleteAccount() async {
+    final user = currentUser;
+    if (user == null) return;
+
+    try {
+      isDeletingAccount = true;
+      // Call the database function to delete both profile and auth user
+      await _client.rpc('delete_user_account');
+
+      // Sign out (clears local session)
+      await signOut();
+    } finally {
+      isDeletingAccount = false;
+    }
+  }
+
+  static Future<bool?> checkIsActive(String userId) async {
     try {
       final response = await _client
           .from('profiles')
@@ -109,15 +163,14 @@ class AuthService {
           .eq('id', userId)
           .maybeSingle();
 
-      if (response == null)
-        return false; // If profile is gone, they shouldn't be in
+      if (response == null) return null; // Profile missing = Not found
       return response['is_active'] ?? true;
     } catch (_) {
       return true; // Keep them in if there is a network error fetching
     }
   }
 
-  static Stream<bool> getAccountStatusStream(String userId, String? email) {
+  static Stream<bool?> getAccountStatusStream(String userId, String? email) {
     // Master Admin is always exempt
     if (email == 'admin@manakiraa.com') {
       return Stream.value(true);
@@ -130,8 +183,8 @@ class AuthService {
         .map((data) {
           debugPrint('📡 Realtime Profile Update: $data');
           if (data.isEmpty) {
-            debugPrint('⚠️ Profile missing! Treating as deactivated.');
-            return false;
+            debugPrint('⚠️ Profile missing!');
+            return null; // Null means account record is incomplete/deleted
           }
           final isActive = data.first['is_active'] ?? true;
           debugPrint('✅ Account is_active: $isActive');

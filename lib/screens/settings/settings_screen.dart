@@ -8,6 +8,7 @@ import '../../core/language/language_controller.dart';
 import '../../core/language/translations.dart';
 import '../property/my_properties_screen.dart';
 import '../chat/chat_detail_screen.dart';
+import '../../core/utils/ui_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -226,67 +227,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Log Out',
-          style: GoogleFonts.nunito(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Theme.of(context).textTheme.titleLarge?.color,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to log out?',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await AuthService.signOut();
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/welcome',
-                  (route) => false,
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(80, 40),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Log Out'),
-          ),
-        ],
-      ),
+  void _showLogoutDialog() async {
+    final confirmed = await UIUtils.showConfirmationSheet(
+      context,
+      title: 'logout_confirm_title'.tr(context),
+      message: 'logout_confirm_message'.tr(context),
+      confirmLabel: 'logout'.tr(context),
+      cancelLabel: 'cancel'.tr(context),
+      isDestructive: true,
+      icon: Icons.logout_rounded,
     );
+
+    if (confirmed == true && mounted) {
+      await AuthService.signOut();
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/welcome',
+          (route) => false,
+        );
+      }
+    }
+  }
+
+  void _showDeleteAccountDialog() async {
+    final confirmed = await UIUtils.showConfirmationSheet(
+      context,
+      title: 'delete_account_confirm_title'.tr(context),
+      message: 'delete_account_confirm_message'.tr(context),
+      confirmLabel: 'delete_account'.tr(context),
+      cancelLabel: 'cancel'.tr(context),
+      isDestructive: true,
+      icon: Icons.person_remove_rounded,
+    );
+
+    if (confirmed == true && mounted) {
+      try {
+        await AuthService.deleteAccount();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('account_deleted_success'.tr(context))),
+          );
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/welcome',
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error deleting account: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -555,6 +553,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ], theme),
               const SizedBox(height: 32),
+              // Danger Zone
+              _sectionLabel('danger_zone'.tr(context), theme),
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: _showDeleteAccountDialog,
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.error.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.person_remove_outlined,
+                        size: 20,
+                        color: AppColors.error,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'delete_account'.tr(context),
+                        style: GoogleFonts.nunito(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
               // Logout Button
               GestureDetector(
                 onTap: _showLogoutDialog,

@@ -80,7 +80,28 @@ class _SignupScreenState extends State<SignupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Google Sign In failed: $e'),
+            content: Text('${'google_sign_in_failed'.tr(context)}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _handleFacebookSignIn() async {
+    setState(() => _isLoading = true);
+    try {
+      await AuthService.signInWithFacebook();
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/main');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Facebook Sign In failed: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -113,7 +134,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
           );
-          Navigator.pushReplacementNamed(context, '/login');
+          Navigator.pushReplacementNamed(context, '/main');
         }
       } catch (e) {
         if (mounted) {
@@ -335,11 +356,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _socialButton(
-                        Icons.apple_rounded,
-                        'apple'.tr(context),
-                        onTap: () {
-                          // TODO: Apple Sign In
-                        },
+                        Icons.facebook_rounded,
+                        'facebook'.tr(context),
+                        color: const Color(0xFF1877F2),
+                        onTap: _isLoading ? null : _handleFacebookSignIn,
                       ),
                     ),
                   ],
@@ -392,7 +412,12 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _socialButton(IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _socialButton(
+    IconData icon,
+    String label, {
+    Color? color,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -407,14 +432,14 @@ class _SignupScreenState extends State<SignupScreen> {
             Icon(
               icon,
               size: 24,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
+              color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
                 color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),

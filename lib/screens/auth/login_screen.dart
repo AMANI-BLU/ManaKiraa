@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/language/translations.dart';
+import '../../core/language/language_controller.dart';
 import '../../core/supabase/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,6 +19,88 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+
+  void _showLanguagePicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.dividerTheme.color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'select_language'.tr(context),
+                style: GoogleFonts.nunito(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: theme.textTheme.titleLarge?.color,
+                ),
+              ),
+              const SizedBox(height: 16),
+              for (final lang in [
+                {'name': 'English', 'code': 'en'},
+                {'name': 'Afan Oromo', 'code': 'om'},
+                {'name': 'Amharic', 'code': 'am'},
+              ])
+                ListTile(
+                  onTap: () async {
+                    await LanguageController.instance.setLanguage(
+                      lang['code']!,
+                    );
+                    if (mounted) {
+                      setState(() {});
+                      Navigator.pop(context);
+                    }
+                  },
+                  leading: Icon(
+                    LanguageController.instance.value.languageCode ==
+                            lang['code']
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    color:
+                        LanguageController.instance.value.languageCode ==
+                            lang['code']
+                        ? theme.primaryColor
+                        : theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.5,
+                          ),
+                  ),
+                  title: Text(
+                    lang['name']!,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight:
+                          LanguageController.instance.value.languageCode ==
+                              lang['code']
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -56,14 +139,18 @@ class _LoginScreenState extends State<LoginScreen> {
         if (user != null) {
           final isActive = await AuthService.checkIsActive(user.id);
           if (mounted) {
-            if (isActive) {
+            if (isActive == true) {
               Navigator.pushReplacementNamed(context, '/main');
             } else {
               await AuthService.signOut();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Your account has been deactivated.'),
+                  SnackBar(
+                    content: Text(
+                      isActive == false
+                          ? 'account_deactivated'.tr(context)
+                          : 'account_not_found'.tr(context),
+                    ),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -76,7 +163,50 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Google Sign In failed: $e'),
+            content: Text('${'google_sign_in_failed'.tr(context)}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _handleFacebookSignIn() async {
+    setState(() => _isLoading = true);
+    try {
+      await AuthService.signInWithFacebook();
+      if (mounted) {
+        final user = AuthService.currentUser;
+        if (user != null) {
+          final isActive = await AuthService.checkIsActive(user.id);
+          if (mounted) {
+            if (isActive == true) {
+              Navigator.pushReplacementNamed(context, '/main');
+            } else {
+              await AuthService.signOut();
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isActive == false
+                          ? 'account_deactivated'.tr(context)
+                          : 'account_not_found'.tr(context),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Facebook Sign In failed: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -100,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (user != null) {
             final isActive = await AuthService.checkIsActive(user.id);
             if (mounted) {
-              if (isActive) {
+              if (isActive == true) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   '/main',
@@ -110,8 +240,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 await AuthService.signOut();
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Your account has been deactivated.'),
+                    SnackBar(
+                      content: Text(
+                        (isActive == false)
+                            ? 'account_deactivated'.tr(context)
+                            : 'account_not_found'.tr(context),
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -174,18 +308,54 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Back Button
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).inputDecorationTheme.fillColor,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 18,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).inputDecorationTheme.fillColor,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
+                      ),
+                      // Language Picker Button
+                      TextButton.icon(
+                        onPressed: _showLanguagePicker,
+                        icon: Icon(
+                          Icons.language_rounded,
+                          size: 18,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        label: Text(
+                          LanguageController.instance.currentLanguage,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.08),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -269,19 +439,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'password_reset_sent'.tr(context),
-                            style: GoogleFonts.inter(fontSize: 13),
-                          ),
-                          backgroundColor: AppColors.success,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/forgot-password');
                     },
                     child: Text(
                       'forgot_password'.tr(context),
@@ -340,11 +498,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _socialButton(
-                        Icons.apple_rounded,
-                        'apple'.tr(context),
-                        onTap: () {
-                          // TODO: Apple Sign In
-                        },
+                        Icons.facebook_rounded,
+                        'facebook'.tr(context),
+                        color: const Color(0xFF1877F2),
+                        onTap: _isLoading ? null : _handleFacebookSignIn,
                       ),
                     ),
                   ],
@@ -386,7 +543,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialButton(IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _socialButton(
+    IconData icon,
+    String label, {
+    Color? color,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -401,14 +563,14 @@ class _LoginScreenState extends State<LoginScreen> {
             Icon(
               icon,
               size: 24,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
+              color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
                 color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),

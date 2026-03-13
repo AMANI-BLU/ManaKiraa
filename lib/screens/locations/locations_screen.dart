@@ -11,66 +11,16 @@ class LocationsScreen extends StatelessWidget {
   const LocationsScreen({super.key});
 
   static const List<Map<String, dynamic>> _locations = [
-    {
-      'name': 'Addis Ketema',
-      'properties': 15,
-      'image':
-          'https://images.unsplash.com/photo-1544085311-11a028465b0c?w=400',
-    },
-    {
-      'name': 'Bajaj Tera(Quufto)',
-      'properties': 8,
-      'image':
-          'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400',
-    },
-    {
-      'name': 'Stadium',
-      'properties': 12,
-      'image':
-          'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400',
-    },
-    {
-      'name': 'Project(Quufto)',
-      'properties': 10,
-      'image':
-          'https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?w=400',
-    },
-    {
-      'name': 'Garbi',
-      'properties': 6,
-      'image':
-          'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=400',
-    },
-    {
-      'name': 'Kella(Doloollo Hoola)',
-      'properties': 9,
-      'image':
-          'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=400',
-    },
-    {
-      'name': 'Gabaya Guddo',
-      'properties': 14,
-      'image':
-          'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400',
-    },
-    {
-      'name': 'Gabaya Diqo',
-      'properties': 7,
-      'image':
-          'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400',
-    },
-    {
-      'name': 'Gidicho',
-      'properties': 5,
-      'image':
-          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400',
-    },
-    {
-      'name': 'Kideste mariam school sefer',
-      'properties': 4,
-      'image':
-          'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=400',
-    },
+    {'name': 'Addis Ketema', 'properties': 15},
+    {'name': 'Bajaj Tera(Quufto)', 'properties': 8},
+    {'name': 'Stadium', 'properties': 12},
+    {'name': 'Project(Quufto)', 'properties': 10},
+    {'name': 'Garbi', 'properties': 6},
+    {'name': 'Kella(Doloollo Hoola)', 'properties': 9},
+    {'name': 'Gabaya Guddo', 'properties': 14},
+    {'name': 'Gabaya Diqo', 'properties': 7},
+    {'name': 'Gidicho', 'properties': 5},
+    {'name': 'Kideste mariam school sefer', 'properties': 4},
   ];
 
   void _showLocationProperties(
@@ -169,7 +119,7 @@ class LocationsScreen extends StatelessWidget {
                           loc['name'],
                           properties,
                         ),
-                        child: _locationCard(loc, theme),
+                        child: _locationCard(loc, theme, context),
                       );
                     },
                   );
@@ -182,7 +132,11 @@ class LocationsScreen extends StatelessWidget {
     );
   }
 
-  Widget _locationCard(Map<String, dynamic> loc, ThemeData theme) {
+  Widget _locationCard(
+    Map<String, dynamic> loc,
+    ThemeData theme,
+    BuildContext context,
+  ) {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
@@ -200,26 +154,34 @@ class LocationsScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18),
-              bottomLeft: Radius.circular(18),
-            ),
-            child: Image.network(
-              loc['image'],
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 90,
-                height: 90,
-                color: theme.inputDecorationTheme.fillColor,
-                child: const Icon(
-                  Icons.location_city,
-                  color: AppColors.textLight,
-                ),
+          // Styled Placeholder with Icon
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(18),
+                bottomLeft: Radius.circular(18),
               ),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  theme.primaryColor.withValues(alpha: 0.1),
+                  theme.primaryColor.withValues(alpha: 0.05),
+                ],
+              ),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.location_city_rounded,
+                  size: 32,
+                  color: theme.primaryColor.withValues(alpha: 0.4),
+                ),
+                // Subtle overlay pattern or consistent image could go here
+              ],
             ),
           ),
           const SizedBox(width: 16),
@@ -239,7 +201,7 @@ class LocationsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${loc['properties']} Properties',
+                  '${loc['properties']} ${'properties'.tr(context)}',
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     color: theme.textTheme.bodyMedium?.color?.withValues(

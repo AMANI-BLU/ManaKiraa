@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           .currentUser
                                           ?.email
                                           ?.split('@')[0] ??
-                                      'Yabello, Ethiopia',
+                                      'yabello_et'.tr(context),
                                   style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: theme.textTheme.displayLarge?.color,
                                   ),
                                 ),
-                                // Unread dot — only shown when there are unread notifications
+                                // Unread dot \u2014 only shown when there are unread notifications
                                 if (_hasUnreadNotifications)
                                   Positioned(
                                     top: 7,
@@ -317,7 +317,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(width: 10),
                           itemBuilder: (context, index) {
                             return CategoryChip(
-                              label: MockData.categories[index],
+                              label: _getCategoryTranslation(
+                                MockData.categories[index],
+                                context,
+                              ),
                               isSelected: _selectedCategoryIndex == index,
                               onTap: () {
                                 setState(() {
@@ -344,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Text(
                                 isSearchOrFilter
-                                    ? 'Results'
+                                    ? 'results'.tr(context)
                                     : 'newly_added'.tr(context),
                                 style: GoogleFonts.nunito(
                                   fontSize: 16,
@@ -387,7 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             GestureDetector(
                               onTap: () => setState(() => _showAll = !_showAll),
                               child: Text(
-                                _showAll ? 'Show Less' : 'see_all'.tr(context),
+                                _showAll
+                                    ? 'show_less'.tr(context)
+                                    : 'see_all'.tr(context),
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -417,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    'No properties found',
+                                    'no_properties_found'.tr(context),
                                     style: GoogleFonts.nunito(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
@@ -470,5 +475,24 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  String _getCategoryTranslation(String category, BuildContext context) {
+    switch (category) {
+      case 'All':
+        return 'cat_all'.tr(context);
+      case 'Single Room':
+        return 'cat_single_room'.tr(context);
+      case 'Organization':
+        return 'cat_organization'.tr(context);
+      case 'Commercial':
+        return 'cat_commercial'.tr(context);
+      case 'Family House':
+        return 'cat_family_house'.tr(context);
+      case 'Store':
+        return 'cat_store'.tr(context);
+      default:
+        return category;
+    }
   }
 }

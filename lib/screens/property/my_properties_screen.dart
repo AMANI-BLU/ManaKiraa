@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/property/property_controller.dart';
 import '../../models/property.dart';
-import 'property_detail_screen.dart';
+import '../../core/property/property_controller.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/language/translations.dart';
+import '../../core/utils/ui_utils.dart';
 import 'add_property_screen.dart';
+import '../property/property_detail_screen.dart';
 
 class MyPropertiesScreen extends StatefulWidget {
   const MyPropertiesScreen({super.key});
@@ -14,22 +16,12 @@ class MyPropertiesScreen extends StatefulWidget {
 }
 
 class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
-  final _controller = PropertyController.instance;
+  final PropertyController _controller = PropertyController.instance;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onPropertiesChanged);
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_onPropertiesChanged);
-    super.dispose();
-  }
-
-  void _onPropertiesChanged() {
-    if (mounted) setState(() {});
+    _controller.refresh();
   }
 
   @override
@@ -40,21 +32,19 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'My Properties',
-          style: GoogleFonts.nunito(fontWeight: FontWeight.w800),
+          'my_properties'.tr(context),
+          style: GoogleFonts.nunito(fontWeight: FontWeight.bold),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
+        actions: [
+          IconButton(
+            onPressed: () => _controller.refresh(),
+            icon: const Icon(Icons.refresh_rounded),
+          ),
+        ],
       ),
-      body: StreamBuilder<List<Property>>(
-        stream: PropertyController.getMyPropertiesStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final properties = snapshot.data ?? [];
+      body: ValueListenableBuilder<List<Property>>(
+        valueListenable: _controller.myProperties,
+        builder: (context, properties, _) {
           if (properties.isEmpty) {
             return Center(
               child: Column(
@@ -67,10 +57,9 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No properties posted yet',
+                    'no_properties_posted'.tr(context),
                     style: GoogleFonts.nunito(
                       fontSize: 18,
-                      fontWeight: FontWeight.w600,
                       color: AppColors.textLight,
                     ),
                   ),
@@ -78,17 +67,18 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
               ),
             );
           }
+
           return ListView.builder(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             itemCount: properties.length,
             itemBuilder: (context, index) {
               final property = properties[index];
-              return _propertyCard(property, theme);
+              return _buildPropertyCard(property, context);
             },
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.push(
             context,
@@ -96,26 +86,20 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
           );
           _controller.refresh();
         },
-        backgroundColor: theme.primaryColor,
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 30),
+        label: Text('post_property'.tr(context)),
+        icon: const Icon(Icons.add_rounded),
       ),
     );
   }
 
-  Widget _propertyCard(Property property, ThemeData theme) {
-    return Container(
+  Widget _buildPropertyCard(Property property, BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      elevation: 2,
+      shadowColor: Colors.black12,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [
           ListTile(
@@ -124,14 +108,14 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 property.imageUrl,
-                width: 60,
-                height: 60,
+                width: 80,
+                height: 80,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 60,
-                  height: 60,
-                  color: AppColors.textLight.withValues(alpha: 0.1),
-                  child: Icon(Icons.home, color: AppColors.textLight),
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.broken_image_rounded),
                 ),
               ),
             ),
@@ -141,29 +125,9 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                   child: Text(
                     property.name,
                     style: GoogleFonts.nunito(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            subtitle: Text(
-              property.location,
-              style: GoogleFonts.inter(fontSize: 13),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'ETB ${property.price.toInt()}',
-                  style: GoogleFonts.nunito(
-                    fontWeight: FontWeight.w800,
-                    color: theme.primaryColor,
                   ),
                 ),
                 if (property.isVerified)
@@ -182,15 +146,47 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                       color: Colors.orange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Text(
-                      'Pending Approval',
-                      style: TextStyle(
+                    child: Text(
+                      'pending_approval'.tr(context),
+                      style: const TextStyle(
                         color: Colors.orange,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+              ],
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on_rounded,
+                      size: 14,
+                      color: AppColors.textLight,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      property.location,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'ETB ${property.price}/mo',
+                  style: TextStyle(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
               ],
             ),
             onTap: () => Navigator.push(
@@ -200,56 +196,55 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
               ),
             ),
           ),
-          Divider(height: 1, color: theme.dividerTheme.color),
+          const Divider(height: 1),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                // Verification
                 if (property.verificationStatus == 'pending')
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.hourglass_empty_rounded,
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'pending'.tr(context),
+                      style: const TextStyle(
                         color: Colors.orange,
-                        size: 18,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Pending',
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
+                    ),
                   )
-                else if (!property.isVerified)
-                  const SizedBox.shrink()
-                else
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
+                else if (property.isVerified)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.verified.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'verified'.tr(context),
+                      style: const TextStyle(
                         color: AppColors.verified,
-                        size: 18,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Verified',
-                        style: TextStyle(
-                          color: AppColors.verified,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 const Spacer(),
                 // Edit
                 IconButton(
-                  tooltip: 'Edit',
+                  tooltip: 'edit'.tr(context),
                   onPressed: () async {
                     await Navigator.push(
                       context,
@@ -263,7 +258,7 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                 ),
                 // Delete
                 IconButton(
-                  tooltip: 'Delete',
+                  tooltip: 'delete'.tr(context),
                   onPressed: () => _confirmDelete(property),
                   icon: const Icon(
                     Icons.delete_outline_rounded,
@@ -278,45 +273,27 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
     );
   }
 
-  void _confirmDelete(Property property) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Delete Property',
-          style: GoogleFonts.nunito(fontWeight: FontWeight.w700),
-        ),
-        content: Text(
-          'Are you sure you want to remove "${property.name}"? This cannot be undone.',
-          style: GoogleFonts.inter(fontSize: 14, height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              await _controller.removeProperty(property.id);
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Property removed')),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+  void _confirmDelete(Property property) async {
+    final confirmed = await UIUtils.showConfirmationSheet(
+      context,
+      title: 'delete_property_confirm_title'.tr(context),
+      message: 'delete_property_confirm_message'.tr(context),
+      confirmLabel: 'delete'.tr(context),
+      cancelLabel: 'cancel'.tr(context),
+      isDestructive: true,
+      icon: Icons.delete_outline_rounded,
     );
+
+    if (confirmed == true && mounted) {
+      await _controller.removeProperty(property.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('property_removed'.tr(context)),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    }
   }
 }

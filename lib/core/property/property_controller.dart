@@ -9,6 +9,7 @@ class PropertyController extends ValueNotifier<List<Property>> {
 
   PropertyController._() : super([]) {
     _initRealtime();
+    _updateMyProperties();
   }
 
   static final PropertyController instance = PropertyController._();
@@ -17,7 +18,15 @@ class PropertyController extends ValueNotifier<List<Property>> {
     _subscription?.cancel();
     _subscription = SupabaseService.getPropertiesStream().listen((properties) {
       value = properties;
+      _updateMyProperties();
     });
+  }
+
+  final ValueNotifier<List<Property>> myProperties = ValueNotifier([]);
+
+  void _updateMyProperties() {
+    final user = Supabase.instance.client.auth.currentUser;
+    myProperties.value = value.where((p) => p.user_id == user?.id).toList();
   }
 
   static Stream<List<Property>> getMyPropertiesStream() {
@@ -52,6 +61,7 @@ class PropertyController extends ValueNotifier<List<Property>> {
   Future<void> refresh() async {
     final properties = await SupabaseService.fetchProperties();
     value = properties;
+    _updateMyProperties();
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/language/translations.dart';
+import '../../core/language/language_controller.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -35,6 +36,88 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _showLanguagePicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.dividerTheme.color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'select_language'.tr(context),
+                style: GoogleFonts.nunito(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: theme.textTheme.titleLarge?.color,
+                ),
+              ),
+              const SizedBox(height: 16),
+              for (final lang in [
+                {'name': 'English', 'code': 'en'},
+                {'name': 'Afan Oromo', 'code': 'om'},
+                {'name': 'Amharic', 'code': 'am'},
+              ])
+                ListTile(
+                  onTap: () async {
+                    await LanguageController.instance.setLanguage(
+                      lang['code']!,
+                    );
+                    if (mounted) {
+                      setState(() {});
+                      Navigator.pop(context);
+                    }
+                  },
+                  leading: Icon(
+                    LanguageController.instance.value.languageCode ==
+                            lang['code']
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_off_rounded,
+                    color:
+                        LanguageController.instance.value.languageCode ==
+                            lang['code']
+                        ? theme.primaryColor
+                        : theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.5,
+                          ),
+                  ),
+                  title: Text(
+                    lang['name']!,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight:
+                          LanguageController.instance.value.languageCode ==
+                              lang['code']
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                      color: theme.textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -81,6 +164,40 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     gradient: AppColors.welcomeGradient,
                   ),
                 ),
+                // Language Picker (Top Right)
+                Positioned(
+                  top: 50,
+                  right: 20,
+                  child: TextButton.icon(
+                    onPressed: _showLanguagePicker,
+                    icon: const Icon(
+                      Icons.language_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      LanguageController.instance.currentLanguage,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      backgroundColor: Colors.white.withValues(alpha: 0.15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 // Logo and text overlay
                 Positioned(
                   left: 0,
@@ -119,7 +236,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Dream House',
+                        'dream_house'.tr(context),
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -141,14 +258,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               opacity: _fadeAnim,
               child: SlideTransition(
                 position: _slideAnim,
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 24),
                       Text(
                         'welcome'.tr(context),
+                        textAlign: TextAlign.center,
                         style: GoogleFonts.nunito(
                           fontSize: 28,
                           fontWeight: FontWeight.w900,
@@ -160,7 +278,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Find your next space, feel at home',
+                        'welcome_primary_tagline'.tr(context),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
                           fontSize: 15,
@@ -171,7 +289,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Where comfort meets convenience',
+                        'welcome_secondary_tagline'.tr(context),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
                           fontSize: 14,
@@ -185,7 +303,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         onPressed: () {
                           Navigator.pushNamed(context, '/login');
                         },
-                        child: const Text('Login'),
+                        child: Text('login'.tr(context)),
                       ),
                       const SizedBox(height: 14),
                       // Sign Up Button
@@ -193,9 +311,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         onPressed: () {
                           Navigator.pushNamed(context, '/signup');
                         },
-                        child: const Text('Sign Up'),
+                        child: Text('signup'.tr(context)),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),

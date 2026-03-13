@@ -295,13 +295,18 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: (chat['avatar'] as String?)?.isEmpty ?? true
+                  child: chat['isAdmin'] == true
+                      ? Image.asset(
+                          'assets/icons/app_icon.png',
+                          fit: BoxFit.cover,
+                        )
+                      : (chat['avatar'] as String?)?.isEmpty ?? true
                       ? Container(
-                          color: theme.primaryColor,
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 24,
+                          color: theme.primaryColor.withValues(alpha: 0.1),
+                          child: Icon(
+                            Icons.person_rounded,
+                            color: theme.primaryColor,
+                            size: 20,
                           ),
                         )
                       : CachedNetworkImage(

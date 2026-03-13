@@ -354,8 +354,8 @@ class ChatService {
           // Since we might not have 'email' in the cache, let's use a more robust way.
           final isAdmin =
               profile?['full_name'] == 'Admin' ||
-              profile?['id'] ==
-                  'f04523c9-9430-4e3a-967a-569038234fd7'; // Placeholder for actual admin ID if known, but 'Admin' is what we check.
+              profile?['id'] == 'f04523c9-9430-4e3a-967a-569038234fd7' ||
+              profile?['email'] == 'admin@manakiraa.com';
 
           results.add({
             'propertyId': msg.propertyId,
@@ -365,7 +365,7 @@ class ChatService {
                 : (profile?['full_name'] ??
                       'User ${otherUserId.substring(0, 4)}'),
             'avatar': isAdmin
-                ? 'https://ui-avatars.com/api/?name=Mana+Kira&background=1a1a2e&color=fff'
+                ? 'https://raw.githubusercontent.com/AMANI-BLU/ManaKiraa/main/assets/icons/app_icon.png'
                 : (profile?['avatar_url'] ?? ''),
             'message': msg.content,
             'time': _formatChatTime(msg.createdAt),

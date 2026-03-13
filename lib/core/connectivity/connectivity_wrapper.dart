@@ -84,7 +84,7 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper>
     }
   }
 
-  StreamSubscription<bool>? _accountSub;
+  StreamSubscription<bool?>? _accountSub;
 
   void _startAccountStatusListener(String userId, String? email) {
     _stopAccountStatusListener();
@@ -93,8 +93,13 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper>
     _accountSub = AuthService.getAccountStatusStream(userId, email).listen((
       isActive,
     ) async {
-      if (!isActive && mounted) {
-        debugPrint('🚫 Account deactivated/deleted! Forcing instant logout...');
+      if (isActive != true &&
+          mounted &&
+          !AuthService.isDeletingAccount &&
+          AuthService.currentUser != null) {
+        debugPrint(
+          '🚫 Account deactivated or deleted! Forcing instant logout...',
+        );
 
         // 1. Force Logout in Supabase
         await AuthService.signOut();
@@ -109,13 +114,15 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper>
         final context = NotificationService.navigatorKey.currentContext;
         if (context != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(
-                'Your account has been deactivated by an administrator.',
+                isActive == false
+                    ? 'Your account has been deactivated by an administrator.'
+                    : 'Account record not found. It may have been deleted.',
               ),
               backgroundColor: Colors.red,
               behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 5),
+              duration: const Duration(seconds: 5),
             ),
           );
         }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'language_controller.dart';
 
 class Translations {
@@ -18,7 +19,22 @@ class Translations {
       'forgot_password': 'Forgot Password?',
       'email_address': 'Email Address',
       'password': 'Password',
+      'new_password': 'New Password',
       'full_name': 'Full Name',
+      'reset_password': 'Reset Password',
+      'enter_email_reset':
+          'Enter your email address to receive a password reset link.',
+      'send_reset_link': 'Send Reset Link',
+      'update_password': 'Update Password',
+      'password_updated_success': 'Password updated successfully!',
+      'enter_new_password_hint': 'Please enter your new password below.',
+      'error_reset_link': 'Error sending reset link',
+      'error_update_password': 'Error updating password',
+      'verify_otp': 'Verify Code',
+      'enter_otp_hint': 'Enter the 6-digit code sent to your email.',
+      'invalid_otp': 'Invalid or expired code',
+      'resend_code': 'Resend Code',
+      'otp_verified_success': 'Code verified successfully!',
       'settings': 'Settings',
       'preferences': 'Preferences',
       'app_theme': 'App Theme',
@@ -76,6 +92,7 @@ class Translations {
       'no_properties_area': 'No properties in this area yet',
       'continue_with': 'Or continue with',
       'google': 'Google',
+      'facebook': 'Facebook',
       'apple': 'Apple',
       'dont_have_account': "Don't have an account? ",
       'enter_email': 'Enter your email',
@@ -117,6 +134,48 @@ class Translations {
       'thank_you_rating': 'Thank you for your rating!',
       'select_amenities': 'Select Amenities',
       'category': 'Category',
+      'select_language': 'Select Language',
+      'dream_house': 'Dream House',
+      'welcome_primary_tagline': 'Find your next space, feel at home',
+      'welcome_secondary_tagline': 'Where comfort meets convenience',
+      'account_deactivated': 'Your account has been deactivated.',
+      'account_not_found': 'Account not found. It may have been deleted.',
+      'signup_success': 'Signup successful! Welcome home.',
+      'signup_failed': 'Signup failed',
+      'google_sign_in_failed': 'Google Sign In failed',
+      'cancel': 'Cancel',
+      'confirm': 'Confirm',
+      'logout_confirm_title': 'Log Out',
+      'logout_confirm_message':
+          'Are you sure you want to log out of your account?',
+      'delete_property_confirm_title': 'Delete Property',
+      'delete_property_confirm_message':
+          'Are you sure you want to remove this property? This action cannot be undone.',
+      'delete_account': 'Delete Account',
+      'delete_account_confirm_title': 'Delete Account?',
+      'delete_account_confirm_message':
+          'Are you sure you want to delete your account? This will remove your profile and all your listings. This action is permanent.',
+      'account_deleted_success': 'Your account has been successfully deleted.',
+      'danger_zone': 'Danger Zone',
+      'my_properties': 'My Properties',
+      'no_properties_posted': 'No properties posted yet',
+      'property_removed': 'Property removed successfully',
+      'pending': 'Pending',
+      'pending_approval': 'Pending Approval',
+      'delete': 'Delete',
+      'edit': 'Edit',
+      'area_sqm': 'Area (sqm)',
+      'cat_all': 'All',
+      'cat_single_room': 'Single Room',
+      'cat_organization': 'Organization',
+      'cat_commercial': 'Commercial',
+      'cat_family_house': 'Family House',
+      'cat_store': 'Store',
+      'yabello_et': 'Yabello, Ethiopia',
+      'results': 'Results',
+      'show_less': 'Show Less',
+      'dialer_error': 'Could not launch dialer',
+      'property_owner': 'Property Owner',
     },
     'om': {
       'welcome': 'BAGA NAGAAN DHUFTAN',
@@ -131,7 +190,24 @@ class Translations {
       'forgot_password': 'Jecha iccitii irraanfattee?',
       'email_address': 'Teessoo Imeelii',
       'password': 'Jecha Iccitii',
+      'new_password': 'Jecha Iccitii Haaraa',
       'full_name': 'Maqaa Guutuu',
+      'reset_password': 'Jecha Iccitii Deebisi',
+      'enter_email_reset':
+          'Liinkii jecha iccitii deebisu argachuuf teessoo imeelii keessan galchaa.',
+      'send_reset_link': 'Liinkii Deebisuu Ergi',
+      'update_password': 'Jecha Iccitii Haaromsi',
+      'password_updated_success': 'Jechi iccitii milkaa\'inaan haaromfameera!',
+      'enter_new_password_hint':
+          'Maaloo jecha iccitii keessan isa haaraa galchaa.',
+      'error_reset_link': 'Liinkii deebisuu erguu irratti dogoggorri uumameera',
+      'error_update_password':
+          'Jecha iccitii haaromsuu irratti dogoggorri uumameera',
+      'verify_otp': 'Koodii Mirkaneessi',
+      'enter_otp_hint': 'Koodii digit 6 imeelii keessanitti ergame galchaa.',
+      'invalid_otp': 'Koodiin dogoggora ykn yeroon isaa darbeera',
+      'resend_code': 'Koodii Lamman Ergi',
+      'otp_verified_success': 'Koodiin milkaa\'inaan mirkanaa\'eera!',
       'settings': 'Sajataa',
       'preferences': 'Filannoowwan',
       'app_theme': 'Bifa Appii',
@@ -189,6 +265,7 @@ class Translations {
       'no_properties_area': 'Naannoo kanatti hamma yoonaatti qabeenyi hin jiru',
       'continue_with': 'Yookaan kanaan itti fufi',
       'google': 'Google',
+      'facebook': 'Facebook',
       'apple': 'Apple',
       'dont_have_account': 'Akkaawuntii hin qabduu? ',
       'enter_email': 'Imeelii keessan galchaa',
@@ -232,6 +309,51 @@ class Translations {
       'thank_you_rating': 'Madaallii keessaniif galatoomaa!',
       'select_amenities': 'Tajaajilota Filadhu',
       'category': 'Ramaddii',
+      'select_language': 'Afaan Filadhu',
+      'dream_house': 'Mana Abjuu',
+      'welcome_primary_tagline':
+          'Bakka itti aanu argadhu, mana keetti sitti haa dhaga\'amu',
+      'welcome_secondary_tagline': 'Bakka qananiin fi mijaawaan walitti dhufan',
+      'signup_success': 'Galmeen milkaa\'eera! Baga nagaan dhuftan.',
+      'signup_failed': 'Galmeen hin milkoofne',
+      'google_sign_in_failed': 'Google\'n seenuun hin milkoofne',
+      'cancel': 'Dhiisi',
+      'confirm': 'Mirkaneessi',
+      'logout_confirm_title': 'Baʼi',
+      'logout_confirm_message':
+          'Akkaawuntii keessan keessaa ba’uu akka barbaaddan mirkanaa’aadhaa?',
+      'delete_property_confirm_title': 'Qabeenya Haqii',
+      'delete_property_confirm_message':
+          'Qabeenya kana haquu akka barbaaddan mirkanaa’aadhaa? Kun duubatti deebi’uu hin danda’u.',
+      'delete_account': 'Akkaawuntii Haqii',
+      'delete_account_confirm_title': 'Akkaawuntii Haquu?',
+      'delete_account_confirm_message':
+          'Akkaawuntii keessan haquu akka barbaaddan mirkanaa’aadhaa? Kun piroofaayila keessanii fi tarreeffama keessan hundaa ni balleessa. Akshiniin kun dhaabbataadha.',
+      'account_deleted_success':
+          'Akkaawuntiin keessan milkaa\'inaan haqameera.',
+      'account_deactivated': 'Herregni keessan tajaajilaan ala ta’eera.',
+      'account_not_found':
+          'Akkaawuntiin hin argamne. Haqamee jiraachuu danda\'a.',
+      'danger_zone': 'Naannoo Balaa',
+      'my_properties': 'Manneen Koo',
+      'no_properties_posted': 'Hamma yoonaatti manni galmaa\'e hin jiru',
+      'property_removed': 'Qabeenyi milkaa\'inaan haqameera',
+      'pending': 'Eeggachaa jira',
+      'pending_approval': 'Mirkaneessa eeggachaa jira',
+      'delete': 'Haqi',
+      'edit': 'Sirreessi',
+      'area_sqm': 'Bal’ina (sqm)',
+      'cat_all': 'Hunda',
+      'cat_single_room': 'Kuta Tokko',
+      'cat_organization': 'Dhaabbata',
+      'cat_commercial': 'Daldala',
+      'cat_family_house': 'Mana Maatii',
+      'cat_store': 'Kuusaa',
+      'yabello_et': 'Yaabelloo, Itoophiyaa',
+      'results': 'Bu’aa',
+      'show_less': 'Xiqqummoo Agarsiisi',
+      'dialer_error': 'Bilbiluu hin dandeenye',
+      'property_owner': 'Abbaa Qabeenyaa',
     },
     'am': {
       'welcome': 'እንኳን ደህና መጡ',
@@ -246,7 +368,16 @@ class Translations {
       'forgot_password': 'የይለፍ ቃል ረስተዋል?',
       'email_address': 'የኢሜል አድራሻ',
       'password': 'የይለፍ ቃል',
+      'new_password': 'አዲስ የይለፍ ቃል',
       'full_name': 'ሙሉ ስም',
+      'reset_password': 'የይለፍ ቃል ይቀይሩ',
+      'enter_email_reset': 'የይለፍ ቃል መቀየሪያ ሊንክ ለማግኘት የኢሜል አድራሻዎን ያስገቡ።',
+      'send_reset_link': 'ሊንኩን ላክ',
+      'update_password': 'የይለፍ ቃል አዘምን',
+      'password_updated_success': 'የይለፍ ቃል በተሳካ ሁኔታ ተቀይሯል!',
+      'enter_new_password_hint': 'እባክዎን አዲሱን የይለፍ ቃልዎን ያስገቡ።',
+      'error_reset_link': 'የመቀየሪያ ሊንኩን በመላክ ላይ ስህተት ተፈጥሯል።',
+      'error_update_password': 'የይለፍ ቃሉን በማዘመን ላይ ስህተት ተፈጥሯል።',
       'settings': 'ቅንብሮች',
       'preferences': 'ምርጫዎች',
       'app_theme': 'የመተግበሪያ ገጽታ',
@@ -304,6 +435,7 @@ class Translations {
       'no_properties_area': 'በዚህ አካባቢ እስካሁን ምንም ቤቶች የሉም',
       'continue_with': 'ወይም በዚህ ይቀጥሉ',
       'google': 'Google',
+      'facebook': 'Facebook',
       'apple': 'Apple',
       'dont_have_account': 'መለያ የለዎትም? ',
       'enter_email': 'ኢሜልዎን ያስገቡ',
@@ -345,12 +477,89 @@ class Translations {
       'thank_you_rating': 'ለሰጡት ደረጃ እናመሰግናለን!',
       'select_amenities': 'አገልግሎቶችን ይምረጡ',
       'category': 'ምድብ',
+      'select_language': 'ቋንቋ ይምረጡ',
+      'dream_house': 'የህልም ቤት',
+      'welcome_primary_tagline': 'ቀጣዩን ቦታዎን ያግኙ፣ እንደ ቤትዎ ይሰማዎ',
+      'welcome_secondary_tagline': 'ምቾት ከቀላልነት ጋር የሚገናኝበት',
+      'account_deactivated': 'መለያዎ ከስራ ውጭ ሆኗል።',
+      'account_not_found': 'መለያው አልተገኘም። ተሰርዞ ሊሆን ይችላል።',
+      'signup_success': 'ምዝገባው ተሳክቷል! እንኳን ደህና መጡ።',
+      'signup_failed': 'ምዝገባ አልተሳካም',
+      'google_sign_in_failed': 'በGoogle መግባት አልተሳካም',
+      'cancel': 'አቁም',
+      'confirm': 'አረጋግጥ',
+      'logout_confirm_title': 'ውጣ',
+      'logout_confirm_message': 'በእርግጥ ከመለያዎ መውጣት ይፈልጋሉ?',
+      'delete_property_confirm_title': 'ንብረቱን ሰርዝ',
+      'delete_property_confirm_message':
+          'በእርግጥ ይህንን ንብረት መሰረዝ ይፈልጋሉ? ይህ ድርጊት ሊመለስ አይችልም።',
+      'delete_account': 'መለያ ሰርዝ',
+      'delete_account_confirm_title': 'መለያ ይሰረዝ?',
+      'delete_account_confirm_message':
+          'በእርግጥ መለያዎን መሰረዝ ይፈልጋሉ? ይህ የእርስዎን መገለጫ እና ሁሉንም ዝርዝሮችዎን ያስወግዳል። ይህ ድርጊት ቋሚ ነው።',
+      'account_deleted_success': 'መለያዎ በተሳካ ሁኔታ ተሰርዟል።',
+      'my_properties': 'የእኔ ንብረቶች',
+      'no_properties_posted': 'እስካሁን ምንም ንብረት አልተለጠፈም',
+      'property_removed': 'ንብረቱ በተሳካ ሁኔታ ተወግዷል',
+      'pending': 'በመጠባበቅ ላይ',
+      'pending_approval': 'ማረጋገጫ በመጠባበቅ ላይ',
+      'delete': 'ሰርዝ',
+      'edit': 'አርትዕ',
+      'area_sqm': 'ስፋት (ካሬ ሜትር)',
+      'cat_all': 'ሁሉም',
+      'cat_single_room': 'ነጠላ ክፍል',
+      'cat_organization': 'ድርጅት',
+      'cat_commercial': 'ንግድ',
+      'cat_family_house': 'የቤተሰብ ቤት',
+      'cat_store': 'መጋዘን',
+      'yabello_et': 'ያቤሎ፣ ኢትዮጵያ',
+      'results': 'ውጤቶች',
+      'show_less': 'በትንሹ አሳይ',
+      'dialer_error': 'መደወያውን መክፈት አልተቻለም',
+      'property_owner': 'የንብረቱ ባለቤት',
+      'verify_otp': 'ኮዱን ያረጋግጡ',
+      'enter_otp_hint': 'ወደ ኢሜልዎ የተላከውን ባለ 6-አሃዝ ኮድ ያስገቡ።',
+      'invalid_otp': 'የተሳሳተ ወይም ጊዜው ያለፈበት ኮድ',
+      'resend_code': 'ኮዱን እንደገና ላክ',
+      'otp_verified_success': 'ኮዱ በተሳካ ሁኔታ ተረጋግጧል!',
     },
   };
 
   static String translate(String key, String localeCode) {
     return _data[localeCode]?[key] ?? _data['en']?[key] ?? key;
   }
+}
+
+class AfanOromoMaterialLocalizationsDelegate
+    extends LocalizationsDelegate<MaterialLocalizations> {
+  const AfanOromoMaterialLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'om';
+
+  @override
+  Future<MaterialLocalizations> load(Locale locale) async {
+    return await GlobalMaterialLocalizations.delegate.load(const Locale('en'));
+  }
+
+  @override
+  bool shouldReload(AfanOromoMaterialLocalizationsDelegate old) => false;
+}
+
+class AfanOromoWidgetsLocalizationsDelegate
+    extends LocalizationsDelegate<WidgetsLocalizations> {
+  const AfanOromoWidgetsLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'om';
+
+  @override
+  Future<WidgetsLocalizations> load(Locale locale) async {
+    return await GlobalWidgetsLocalizations.delegate.load(const Locale('en'));
+  }
+
+  @override
+  bool shouldReload(AfanOromoWidgetsLocalizationsDelegate old) => false;
 }
 
 extension TranslationExtension on String {

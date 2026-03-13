@@ -51,5 +51,15 @@
 		<string>Mana Kiraa needs access to your camera to let you take photos for property listings and profile pictures.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.manakira.app</string>
+					<string>com.googleusercontent.apps.812539086704-1135r8a5qd2gcb0ig79fuoqgdctambn4</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

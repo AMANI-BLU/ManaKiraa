@@ -40,32 +40,58 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navigate based on auth session after animations
-    Future.delayed(const Duration(seconds: 3), () async {
-      if (mounted) {
-        final session = Supabase.instance.client.auth.currentSession;
-        if (session != null) {
-          final isActive = await AuthService.checkIsActive(session.user.id);
-          if (mounted) {
-            if (isActive) {
-              Navigator.pushReplacementNamed(context, '/main');
-            } else {
-              await AuthService.signOut();
-              if (mounted) {
-                Navigator.pushReplacementNamed(context, '/welcome');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Your account has been deactivated.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            }
-          }
-        } else {
-          Navigator.pushReplacementNamed(context, '/welcome');
+    // Listen for password recovery deep link
+    final authSub = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) {
+      if (data.event == AuthChangeEvent.passwordRecovery) {
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/reset-password',
+            (route) => false,
+          );
         }
       }
+    });
+
+    // Navigate based on auth session after animations
+    Future.delayed(const Duration(milliseconds: 1000), () async {
+      // If we are already navigating to reset-password, skip this
+      if (!mounted) {
+        authSub.cancel();
+        return;
+      }
+
+      final session = Supabase.instance.client.auth.currentSession;
+      if (session != null) {
+        final isActive = await AuthService.checkIsActive(session.user.id);
+        if (mounted) {
+          if (isActive == true) {
+            // Check if we are already on reset-password (via deep link listener)
+            // ModalRoute might be null during pushNamedAndRemoveUntil
+            Navigator.pushReplacementNamed(context, '/main');
+          } else {
+            await AuthService.signOut();
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, '/welcome');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    isActive == false
+                        ? 'Your account has been deactivated.'
+                        : 'Account not found. It may have been deleted.',
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        }
+      } else {
+        Navigator.pushReplacementNamed(context, '/welcome');
+      }
+      authSub.cancel();
     });
   }
 

@@ -320,6 +320,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isOnline = widget.chat['isOnline'] as bool? ?? false;
+    final isAdmin = widget.chat['isAdmin'] == true;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -369,15 +370,21 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14),
-                          child:
-                              (widget.chat['avatar'] as String?)?.isEmpty ??
-                                  true
+                          child: isAdmin
+                              ? Image.asset(
+                                  'assets/icons/app_icon.png',
+                                  fit: BoxFit.cover,
+                                )
+                              : (widget.chat['avatar'] as String?)?.isEmpty ??
+                                    true
                               ? Container(
-                                  color: theme.primaryColor,
-                                  child: const Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                    size: 22,
+                                  color: theme.primaryColor.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  child: Icon(
+                                    Icons.person_rounded,
+                                    color: theme.primaryColor,
+                                    size: 20,
                                   ),
                                 )
                               : CachedNetworkImage(
@@ -385,11 +392,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                   fit: BoxFit.cover,
                                   errorWidget: (context, url, error) =>
                                       Container(
-                                        color: theme.primaryColor,
-                                        child: const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                          size: 22,
+                                        color: theme.primaryColor.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        child: Icon(
+                                          Icons.person_rounded,
+                                          color: theme.primaryColor,
+                                          size: 20,
                                         ),
                                       ),
                                 ),
@@ -436,9 +445,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         final lastSeenStr = presence['last_seen'] as String?;
                         final fullName = presence['full_name'] as String? ?? '';
                         final isAdmin =
-                            fullName == 'Admin' ||
                             presence['id'] ==
-                                'f04523c9-9430-4e3a-967a-569038234fd7';
+                                'f04523c9-9430-4e3a-967a-569038234fd7' ||
+                            presence['email'] == 'admin@manakiraa.com' ||
+                            fullName == 'Admin';
 
                         String name = fullName.isNotEmpty
                             ? fullName
