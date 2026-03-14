@@ -176,6 +176,14 @@ class Translations {
       'show_less': 'Show Less',
       'dialer_error': 'Could not launch dialer',
       'property_owner': 'Property Owner',
+      'privacy_policy_content':
+          'Your privacy is important to us. Mana Kiraa collects only the information necessary to provide you with the best rental experience.\n\nWe never share your personal data with third parties without your consent. Your data is securely stored and encrypted.',
+      'terms_service_content':
+          'By using Mana Kiraa, you agree to these terms of service.\n\n1. You must be 18 years or older to use this app.\n2. All property listings are subject to availability.',
+      'help_support_content':
+          'Need help? We\'re here for you!\n\n📧 Email: solomonamanuel66@gmail.com\n📞 Phone: +251919231519',
+      'about_content':
+          'Mana Kiraa v1.1.0\n\nCreated by Amanuel Solomon. I developed this app to help the Yabello Town community find rental houses. This is just the idea of the app.\n\nIf anyone wants to support me:\n📞 Phone: +251919231519\n📧 Email: solomonamanuel66@gmail.com\n\n© 2026 Mana Kiraa. All rights reserved.',
     },
     'om': {
       'welcome': 'BAGA NAGAAN DHUFTAN',
@@ -354,6 +362,14 @@ class Translations {
       'show_less': 'Xiqqummoo Agarsiisi',
       'dialer_error': 'Bilbiluu hin dandeenye',
       'property_owner': 'Abbaa Qabeenyaa',
+      'privacy_policy_content':
+          'Iccitiin keessan nuuf barbaachisaadha. Mana Kiraa ragaa barbaachisu qofa walitti qabuun muuxannoo kiraa gaarii isiniif kenna.\n\nRagaa keessan qaama sadaffaaf heyyama keessan malee hin hirru. Ragaaleen keessan eegumsaafi iccitiin taa\'u.',
+      'terms_service_content':
+          'Mana Kiraa fayyadamuun waliigaltee tajaajilaa kana irratti waliigaltaniittu.\n\n1. Appii kana fayyadamuuf waggaan keessan 18 ykn isaa ol ta\'uu qaba.\n2. Manneen kiraaf dhiyaatan hundi akkaatuma argamuu isaaniitiin dhiyaatu.',
+      'help_support_content':
+          'Gargaarsi isin barbaachisaa? Nuuf as jirra!\n\n📧 Imeelii: solomonamanuel66@gmail.com\n📞 Bilbila: +251919231519',
+      'about_content':
+          'Mana Kiraa v1.1.0\n\nAmanuel Solomon tiin kan hojjetame. Appii kana hawaasa magaalaa Yaabelloo manneen kiraa akka salphaatti argatan gargaaruu yaaduunkan dalagdameedha.\n\nNamni na deeggaruu barbaadu yoo jiraate:\n📞 Bilbila: +251919231519\n📧 Imeelii: solomonamanuel66@gmail.com\n\n© 2026 Mana Kiraa. Mirgi hunduu seeraan eegamaadha.',
     },
     'am': {
       'welcome': 'እንኳን ደህና መጡ',
@@ -522,6 +538,14 @@ class Translations {
       'invalid_otp': 'የተሳሳተ ወይም ጊዜው ያለፈበት ኮድ',
       'resend_code': 'ኮዱን እንደገና ላክ',
       'otp_verified_success': 'ኮዱ በተሳካ ሁኔታ ተረጋግጧል!',
+      'privacy_policy_content':
+          'ግላዊነትዎ ለእኛ አስፈላጊ ነው። ማና ኪራ (Mana Kiraa) የተሻለ የኪራይ አገልግሎት ልምድ ለእርስዎ ለመስጠት የሚያስፈልጉ መረጃዎችን ብቻ ይሰበስባል።\n\nየእርስዎን የግል መረጃ ያለእርስዎ ፈቃድ ለሶስተኛ ወገኖች ፈጽሞ አናጋራም። መረጃዎ ደህንነቱ በተጠበቀ ሁኔታ ይቀመጣል።',
+      'terms_service_content':
+          'ማና ኪራን ሲጠቀሙ በእነዚህ የአገልግሎት ውሎች ይስማማሉ።\n\n1. ይህንን መተግበሪያ ለመጠቀም እድሜዎ 18 ዓመት ወይም ከዚያ በላይ መሆን አለበት።\n2. ሁሉም የንብረት ዝርዝሮች እንደ መገኘታቸው ሁኔታ ይቀርባሉ።',
+      'help_support_content':
+          'እርዳታ ይፈልጋሉ? እኛ ለእርስዎ እዚህ ነን!\n\n📧 ኢሜል: solomonamanuel66@gmail.com\n📞 ስልክ: +251919231519',
+      'about_content':
+          'Mana Kiraa v1.1.0\n\nበ አማኑኤል ሰለሞን (Amanuel Solomon) የተፈጠረ። ይህን መተግበሪያ ያዘጋጀሁት የያቤሎ ከተማ ማህበረሰብ የኪራይ ቤቶችን በቀላሉ እንዲያገኝ ለመርዳት በማሰብ ነው።\n\nእኔን መደገፍ የሚፈልግ ካለ፦\n📞 ስልክ: +251919231519\n📧 ኢሜል: solomonamanuel66@gmail.com\n\n© 2026 Mana Kiraa. መብቱ በህግ የተጠበቀ ነው።',
     },
   };
 

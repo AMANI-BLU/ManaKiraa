@@ -454,7 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _divider(theme),
                 _navTile(
                   Icons.home_work_outlined,
-                  'My Properties',
+                  'my_properties'.tr(context),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -476,7 +476,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   'privacy_policy'.tr(context),
                   onTap: () => _showInfoDialog(
                     'privacy_policy'.tr(context),
-                    'Your privacy is important to us. Mana Kiraa collects only the information necessary to provide you with the best rental experience.\n\nWe never share your personal data with third parties without your consent. Your data is securely stored and encrypted.',
+                    'privacy_policy_content'.tr(context),
                   ),
                   theme: theme,
                 ),
@@ -486,7 +486,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   'terms_service'.tr(context),
                   onTap: () => _showInfoDialog(
                     'terms_service'.tr(context),
-                    'By using Mana Kiraa, you agree to these terms of service.\n\n1. You must be 18 years or older to use this app.\n2. All property listings are subject to availability.',
+                    'terms_service_content'.tr(context),
                   ),
                   theme: theme,
                 ),
@@ -535,7 +535,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     } catch (e) {
                       _showInfoDialog(
                         'help_support'.tr(context),
-                        'Need help? We\'re here for you!\n\n📧 Email: support@manakiraa.com\n📞 Phone: +251 9876 543 210',
+                        'help_support_content'.tr(context),
                       );
                     }
                   },
@@ -547,7 +547,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   'about'.tr(context),
                   onTap: () => _showInfoDialog(
                     'about'.tr(context),
-                    'Mana Kiraa v1.1.0\n\nYour trusted house rental companion in Ethiopia. Created by Amanuel Solomon.\n\nBuilt with ❤️ by the Mana Kiraa team.\n\n© 2026 Mana Kiraa. All rights reserved.',
+                    'about_content'.tr(context),
                   ),
                   theme: theme,
                 ),

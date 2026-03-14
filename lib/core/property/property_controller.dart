@@ -56,6 +56,10 @@ class PropertyController extends ValueNotifier<List<Property>> {
 
   Future<void> removeProperty(String id) async {
     await SupabaseService.deleteProperty(id);
+
+    // Optimistically update local state for immediate UI reflection
+    value = value.where((p) => p.id != id).toList();
+    _updateMyProperties();
   }
 
   Future<void> refresh() async {

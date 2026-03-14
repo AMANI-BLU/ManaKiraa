@@ -354,7 +354,9 @@ class ChatService {
           // Since we might not have 'email' in the cache, let's use a more robust way.
           final isAdmin =
               profile?['full_name'] == 'Admin' ||
+              profile?['full_name'] == 'Mana Kiraa' ||
               profile?['id'] == 'f04523c9-9430-4e3a-967a-569038234fd7' ||
+              profile?['id'] == 'f567b14a-3ab4-42c6-b93b-3fe086e6404e' ||
               profile?['email'] == 'admin@manakiraa.com';
 
           results.add({

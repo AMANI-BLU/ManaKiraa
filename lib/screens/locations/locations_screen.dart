@@ -31,8 +31,11 @@ class LocationsScreen extends StatelessWidget {
     final filtered = allProperties
         .where(
           (p) =>
-              p.city.toLowerCase() == locationName.toLowerCase() ||
-              p.location.toLowerCase().contains(locationName.toLowerCase()),
+              p.isVerified &&
+              (p.city.toLowerCase() == locationName.toLowerCase() ||
+                  p.location.toLowerCase().contains(
+                    locationName.toLowerCase(),
+                  )),
         )
         .toList();
 
@@ -104,11 +107,12 @@ class LocationsScreen extends StatelessWidget {
                       final count = properties
                           .where(
                             (p) =>
-                                p.city.toLowerCase() ==
-                                    loc['name'].toString().toLowerCase() ||
-                                p.location.toLowerCase().contains(
-                                  loc['name'].toString().toLowerCase(),
-                                ),
+                                p.isVerified &&
+                                (p.city.toLowerCase() ==
+                                        loc['name'].toString().toLowerCase() ||
+                                    p.location.toLowerCase().contains(
+                                      loc['name'].toString().toLowerCase(),
+                                    )),
                           )
                           .length;
                       loc['properties'] = count;

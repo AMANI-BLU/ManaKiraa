@@ -300,9 +300,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   Future<void> _makeCall() async {
-    // In a real app, we'd get the phone number from the chat user's profile
-    // For now, we'll use a placeholder or look it up from mock data if possible
-    final String phoneNumber = widget.chat['phone'] ?? '+251911223344';
+    final isAdmin =
+        widget.chat['isAdmin'] == true ||
+        _receiverId == 'f567b14a-3ab4-42c6-b93b-3fe086e6404e' ||
+        _receiverId == 'f04523c9-9430-4e3a-967a-569038234fd7' ||
+        widget.chat['name'] == 'Support Admin' ||
+        widget.chat['name'] == 'Admin' ||
+        widget.chat['name'] == 'Mana Kira';
+
+    final String phoneNumber = isAdmin
+        ? '+251919231519'
+        : (widget.chat['phone'] ?? '+251911223344');
     final Uri url = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
